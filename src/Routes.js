@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, Switch, Route, useLocation } from "react-router-dom";
+import { Switch, Route, useLocation } from "react-router-dom";
 import Checkout from "./Checkout";
-import Header from "./header/Header";
-import Store from "./Store";
+import Store from "./store/Store";
 import StreamerJsonFactory from "./streamer/StreamerJsonFactory";
 
 //https://dev.twitch.tv/docs/api/reference#get-followed-streams
@@ -13,6 +12,7 @@ const Routes = () => {
   const location = useLocation();
   const [token, setToken] = useState("");
   const [listOfStreamers, setListOfStreamers] = useState([]);
+  const [checkoutList, setCheckoutList] = useState([]);
 
   const getQueryParams = () => {
     const queryString = require('query-string');
@@ -22,17 +22,13 @@ const Routes = () => {
     return parsedToken;
   }
 
-  const getTwitchInfo = async () => {
+  const getTwitchInfo = async (tokenToUse) => {
     const url= "https://api.twitch.tv/helix/streams/followed?user_id=142701659";
     const response = await fetch(url, {
-      mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
         'Client-Id': '1cggof96wxk4k7ggpoe1ig3hq2yzfs',
-        'Access-Control-Allow-Credentials': 'true',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET,HEAD,OPTIONS,POST,PUT',
-        'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Request-Method, Access-Control-Request-Headers, Client-Id, client-id', 
+        'Authorization': `Bearer ${tokenToUse}`
       }
     });
     const json = await response.json();
@@ -45,6 +41,10 @@ const Routes = () => {
     window.location.replace(url);
   }
 
+  const addStreamerToCheckout = (streamer) => {
+    console.log(`Got streamer with ${streamer.name}`);
+  }
+
   useEffect(() => {
     const tokenFromUrl = getQueryParams();
     if(token === "" && !tokenFromUrl) {
@@ -54,7 +54,9 @@ const Routes = () => {
       setToken(tokenFromUrl);
     } 
     if(token !== "") {
-      getTwitchInfo();
+      getTwitchInfo(token);
+    } else if(tokenFromUrl) {
+      getTwitchInfo(tokenFromUrl);
     } else {
       console.log("Error with token.");
     }
@@ -64,9 +66,9 @@ const Routes = () => {
   return (
       <Switch>
         <Route exact path="/"
-         component={Store} />
+         render={props => <Store {...props} list={listOfStreamers} addStreamer={addStreamerToCheckout} />} />
         <Route path="/checkout"
-         component={Checkout} />
+         render={props => <Checkout {...props} checkoutList={checkoutList}/>} />
       </Switch>
   );
 };

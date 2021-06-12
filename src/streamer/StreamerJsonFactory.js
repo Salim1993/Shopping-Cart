@@ -3,10 +3,14 @@ import Streamer from "./Streamer"
 const StreamerJsonFactory = () => {
 
     const createStreamerFromJson = (json) => {
-        return Streamer(json.user_name, json.thumbnail_url, json.viewer_count)
+        const thumbnail = json.thumbnail_url.replace("{width}", 200).replace("{height}", 200);
+        return Streamer(json.user_name, thumbnail, json.viewer_count)
     }
 
     const createStreamerListFromJson = (json) => {
+        if(!json) {
+            return [];
+        }
         const list = json.data.map(jsonObject => {
             return createStreamerFromJson(jsonObject)
         })
