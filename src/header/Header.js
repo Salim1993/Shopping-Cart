@@ -1,7 +1,15 @@
 import { Link } from "react-router-dom";
 import './header.css'
 
-const Header = () => {
+const Header = (props) => {
+
+    const returnCheckoutString = (list) => {
+        if(list && list.length > 0) {
+            return `Checkout (${list.length})`;
+        } else {
+            return "Checkout";
+        }
+    }
 
     return (
         <header className="App-header">
@@ -9,7 +17,9 @@ const Header = () => {
                 Store
             </Link>
             <Link to="/checkout">
-                Checkout
+                {
+                    returnCheckoutString(props.checkoutList)
+                }
             </Link>
         </header>
     );

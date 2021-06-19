@@ -1,6 +1,7 @@
 #store {
     display: grid;
-    grid-template-columns: repeat(auto-fill, 200px);
+    grid-template-columns: repeat(auto-fill, 220px);
     text-align: center;
     column-gap: 20px;
+    row-gap: 20px;
 }

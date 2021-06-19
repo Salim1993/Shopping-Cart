@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Switch, Route, useLocation } from "react-router-dom";
 import Checkout from "./Checkout";
+import Header from "./header/Header";
 import Store from "./store/Store";
 import StreamerJsonFactory from "./streamer/StreamerJsonFactory";
 
@@ -9,6 +10,7 @@ import StreamerJsonFactory from "./streamer/StreamerJsonFactory";
 //For state managemnt between routes, look below
 //https://reactjs.org/docs/context.html or https://stackoverflow.com/questions/49938568/how-to-share-application-state-between-react-router-v4-routes
 const Routes = () => {
+
   const location = useLocation();
   const [token, setToken] = useState("");
   const [listOfStreamers, setListOfStreamers] = useState([]);
@@ -43,6 +45,7 @@ const Routes = () => {
 
   const addStreamerToCheckout = (streamer) => {
     console.log(`Got streamer with ${streamer.name}`);
+    setCheckoutList([...checkoutList, streamer]);
   }
 
   useEffect(() => {
@@ -64,12 +67,16 @@ const Routes = () => {
 
 
   return (
+    <div>
+      <Header checkoutList={checkoutList}/>
       <Switch>
         <Route exact path="/"
          render={props => <Store {...props} list={listOfStreamers} addStreamer={addStreamerToCheckout} />} />
         <Route path="/checkout"
          render={props => <Checkout {...props} checkoutList={checkoutList}/>} />
       </Switch>
+      
+    </div>
   );
 };
 
