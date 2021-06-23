@@ -1,0 +1,6 @@
+.checkout_item_view {
+    display: flex;
+    padding-top: 5px;
+    align-items: center;
+    justify-content: space-around;
+}

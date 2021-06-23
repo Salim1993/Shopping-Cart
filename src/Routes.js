@@ -48,6 +48,16 @@ const Routes = () => {
     setCheckoutList([...checkoutList, streamer]);
   }
 
+  const removeStreamer = (streamer) => {
+    const newList = checkoutList.filter(it => streamer !== it)
+    console.log(`streamer im deleting: ${streamer.name}`)
+    setCheckoutList(newList);
+  }
+
+  const submitCheckout = () => {
+    setCheckoutList([]);
+  }
+
   useEffect(() => {
     const tokenFromUrl = getQueryParams();
     if(token === "" && !tokenFromUrl) {
@@ -73,7 +83,7 @@ const Routes = () => {
         <Route exact path="/"
          render={props => <Store {...props} list={listOfStreamers} addStreamer={addStreamerToCheckout} />} />
         <Route path="/checkout"
-         render={props => <Checkout {...props} checkoutList={checkoutList}/>} />
+         render={props => <Checkout {...props} checkoutList={checkoutList} removeStreamer={removeStreamer} submitCheckout={submitCheckout}/>} />
       </Switch>
       
     </div>
